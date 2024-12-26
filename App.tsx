@@ -1,118 +1,72 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import {RootTabParamList} from './src/types/common';
+import {NavigationContainer} from '@react-navigation/native';
+import HomeScreen from './src/screens/HomeScreen';
+import CalendarScreen from './src/screens/CalendarScreen';
+import LibraryScreen from './src/screens/LibraryScreen';
+import MyPageScreen from './src/screens/MyPageScreen';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const Tab = createBottomTabNavigator<RootTabParamList>();
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+const TAB_SCREENS = [
+  {
+    name: 'Home',
+    component: HomeScreen,
+    title: 'Home',
+    icon: 'home',
+  },
+  {
+    name: 'Calendar',
+    component: CalendarScreen,
+    title: 'Calendar',
+    icon: 'calendar-today',
+  },
+  {
+    name: 'Library',
+    component: LibraryScreen,
+    title: 'Library',
+    icon: 'library-books',
+  },
+  {
+    name: 'MyPage',
+    component: MyPageScreen,
+    title: 'MyPage',
+    icon: 'person',
+  },
+] as const;
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+const TabIcon = ({name, focused}: {name: string; focused: boolean}) => (
+  <Icon name={name} size={24} color={focused ? '#000' : '#ccc'} />
+);
 
 function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <NavigationContainer>
+      <Tab.Navigator
+        screenOptions={{
+          headerShown: false,
+          tabBarActiveTintColor: '#000',
+          tabBarInactiveTintColor: '#888',
+          tabBarStyle: {
+            backgroundColor: '#fff',
+          },
+        }}>
+        {TAB_SCREENS.map(screen => (
+          <Tab.Screen
+            key={screen.name}
+            name={screen.name}
+            component={screen.component}
+            options={{
+              title: screen.title,
+              tabBarIcon: props => <TabIcon name={screen.icon} {...props} />,
+            }}
+          />
+        ))}
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
 
 export default App;

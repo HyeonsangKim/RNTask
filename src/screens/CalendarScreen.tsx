@@ -1,13 +1,26 @@
 import React from 'react';
-import {Text, View} from 'react-native';
-import {commonStyles} from '../styles/common';
+import {View, SafeAreaView} from 'react-native';
+import {Calendarstyle} from '../styles/calendar';
+import {CalendarHeader} from '../components/calendar/CalendarHeader';
+import Calendar from '../components/calendar/Calendar';
 
-type Props = {};
+export default function CalendarScreen() {
+  const [selectedDate, setSelectedDate] = React.useState<Date>(new Date());
+  const [currentMonth, setCurrentMonth] = React.useState<Date>(new Date());
 
-export default function CalendarScreen({}: Props) {
   return (
-    <View style={commonStyles.centerContainer}>
-      <Text>Calendar</Text>
+    <View style={Calendarstyle.container}>
+      <SafeAreaView>
+        <CalendarHeader
+          currentMonth={currentMonth}
+          onMonthChange={setCurrentMonth}
+        />
+      </SafeAreaView>
+      <Calendar
+        selectedDate={selectedDate}
+        onSelectDate={setSelectedDate}
+        currentMonth={currentMonth}
+      />
     </View>
   );
 }
